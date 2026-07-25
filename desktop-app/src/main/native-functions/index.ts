@@ -37,6 +37,12 @@ export const initNativeFunctionHandlers = () => {
         contents.setWindowOpenHandler(() => {
           return {action: 'deny'};
         });
+        contents.on('will-navigate', (event) => {
+          // Block navigation if it was initiated by a sub-frame
+          if (event.initiator && !event.initiator.isMainFrame) {
+            event.preventDefault();
+          }
+        });
         contents.on('will-frame-navigate', (event) => {
           if (!event.isMainFrame) {
             event.preventDefault();
